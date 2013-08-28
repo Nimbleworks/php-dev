@@ -2,13 +2,22 @@
 # vi: set ft=ruby :
 
 Vagrant::Config.run do |config|
-  config.vm.box = "precise64"
-  config.vm.network :private_network, ip: "192.168.111.222"
+  config.vm.box = "precise32"
+  config.vm.network :hostonly, "192.168.33.11"
 
-  Vagrant.configure("2") do |config|
-    config.vm.provision :ansible do |ansible|
-      ansible.playbook = "laravel.yml"
-      ansible.inventory_file = "vagrant_hosts"
+  config.vm.provision :shell, :inline => "echo \"Europe/London\" | sudo tee /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata"
+
+  config.vm.forward_port 80, 8080
+  config.vm.forward_port 3306,3366
+  
+  config.vm.share_folder("v-web", "/var/www", "./site", :owner => "www-data", :group => "www-data")
+end
+
+Vagrant.configure("2") do |config|
+  config.vm.provision :ansible do |ansible|
+      ansible.sudo = true
+      ansible.verbose = true
+      ansible.playbook = "provisioning/laravel.yml"
+      ansible.inventory_file = "provisioning/vagrant_hosts"
     end
-  end
 end

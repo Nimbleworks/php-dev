@@ -1,0 +1,66 @@
+#
+# Setup and configure a Vagrant VM ready for laravel development
+# We'll be using a standard LAMP server, running with the latest
+# of everything we can get. 
+#
+---
+- hosts: Vagrant
+  tasks:
+    - name: Upgrade apt packages
+      apt: upgrade=full
+           update_cache=yes
+    - name: Install git
+      apt: pkg=git
+    - name: Install Vim
+      apt: pkg=vim
+    - name: Install prerequisite packages that are necessary to compile applications
+      apt: pkg={{ item }}
+      with_items:
+        - autoconf
+        - build-essential
+        - rubygems
+        - virtualbox-guest-utils
+    - name: Install the Sass Gem 
+      gem: name=sass state=present
+    - name: Install python-software-properties so the apt_repository module will work properly
+      apt: pkg=python-software-properties
+# this is for php 5.5+ on ubuntu 12.04
+    - name: add the PHP 5.5 PPA
+      apt_repository: repo='ppa:ondrej/php5' state=present
+    - name: ensure php and apache2 are installed
+      action: apt name={{item}} state=installed
+      with_items:
+        - apache2
+        - php5
+        - libapache2-mod-php5
+        - php5-mysql
+        - php5-mcrypt
+        - php5-gd
+        - php5-curl
+        - php5-tidy
+    - name: run apache2
+      service: name=apache2 state=started enabled=yes
+    - name: Install Mysql package
+      apt: name={{ item }} state=installed
+      with_items:
+       - mysql-server
+       - python-mysqldb
+    - name: Start Mysql Service
+      service: name=mysql state=started enabled=true
+    - name: Create Application Database
+      mysql_db: name={{ dbname }} state=present
+    - name: Create Application DB User
+      mysql_user: name={{ dbuser }} password={{ upassword }} priv=*.*:ALL host='%' state=present
+    - name: write the apache config file
+      template: src=templates/dev.conf.j2 dest=/etc/apache2/sites-enabled/dev.conf
+    - name: restart apache2
+      service: name=apache2 state=restarted enabled=yes
+  vars:
+    mysqlservice: mysqld
+    mysql_port: 3306
+    dbuser: root
+    dbname: my_big_db
+    upassword: superpa55word
+    domain: development.dev
+
+
