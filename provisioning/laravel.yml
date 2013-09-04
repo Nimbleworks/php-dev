@@ -55,12 +55,14 @@
       template: src=templates/dev.conf.j2 dest=/etc/apache2/sites-enabled/dev.conf
     - name: restart apache2
       service: name=apache2 state=restarted enabled=yes
+    - name: Apache enable rewrite modules
+      action: command a2enmod rewrite
   vars:
     mysqlservice: mysqld
     mysql_port: 3306
     dbuser: root
     dbname: my_big_db
     upassword: superpa55word
-    domain: development.dev
+    domain: dev.dev
 
 
