@@ -1,10 +1,11 @@
+NameVirtualHost *:80
 <VirtualHost *:80>
   ServerAdmin webmaster@localhost
   ServerName {{domain}}
   DocumentRoot /var/www/public
-
-  <Directory />
-    Options FollowSymLinks
-    AllowOverride All
+  <Directory /var/www/public >
+    Options Indexes FollowSymLinks MultiViews
+    AllowOverride all
+    Allow from all
   </Directory>
 </VirtualHost>
