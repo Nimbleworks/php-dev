@@ -18,6 +18,6 @@ Vagrant.configure("2") do |config|
       ansible.sudo = true
       ansible.verbose = true
       ansible.playbook = "provisioning/laravel.yml"
-      ansible.inventory_file = "provisioning/vagrant_hosts"
+      ansible.inventory_path = "provisioning/vagrant_hosts"
     end
 end
