@@ -27,6 +27,11 @@
 # this is for php 5.5+ on ubuntu 12.04
     - name: add the PHP 5.5 PPA
       apt_repository: repo='ppa:ondrej/php5' state=present
+    - name: add node.js ppa as we like grunt
+      apt_repository: repo='ppa:chris-lea/node.js' state=present
+    - name: Upgrade apt packages - again...
+      apt: upgrade=full
+           update_cache=yes
     - name: ensure php and apache2 are installed
       action: apt name={{item}} state=installed
       with_items:
@@ -39,8 +44,17 @@
         - php5-curl
         - php5-tidy
         - php5-sqlite
+    - name: install node.js and the other things.
+      action: apt name={{item}} state=installed
+      with_items:
+        - nodejs
+    - name: install grunt
+      npm: name=grunt global=yes
     - name: run apache2
       service: name=apache2 state=started enabled=yes
+   #IF You're expecting to server stuff from index.html please comment this out.    
+    - name: Remove index.html from the web folder
+      file: path=/var/www/index.html state=absent
     - name: Install Mysql package
       apt: name={{ item }} state=installed
       with_items:
@@ -65,5 +79,3 @@
     dbname: my_big_db
     upassword: superpa55word
     domain: dev.dev
-
-
