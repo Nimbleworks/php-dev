@@ -68,6 +68,8 @@
       mysql_user: name={{ dbuser }} password={{ upassword }} priv=*.*:ALL host='%' state=present
     - name: write the apache config file
       template: src=templates/dev.conf.j2 dest=/etc/apache2/sites-enabled/dev.conf
+    - name: remove the default site config file
+      file: path=/etc/apache2/sites-enabled/000-default.conf state=absent
     - name: restart apache2
       service: name=apache2 state=restarted enabled=yes
     - name: Apache enable rewrite modules
