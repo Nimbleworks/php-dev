@@ -14,6 +14,9 @@ Vagrant::Config.run do |config|
 end
 
 Vagrant.configure("2") do |config|
+  config.vm.provider :virtualbox do |vb|
+      vb.name = "php-dev"
+  end
   config.vm.provision :ansible do |ansible|
       ansible.sudo = true
       ansible.verbose = true
