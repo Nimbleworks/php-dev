@@ -10,7 +10,7 @@ Vagrant::Config.run do |config|
   config.vm.forward_port 80, 8080
   config.vm.forward_port 3306,3366
   
-  config.vm.share_folder("v-web", "/var/www", "./site", :owner => "www-data", :group => "www-data")
+  config.vm.share_folder("v-web", "/var/www", "../", :owner => "www-data", :group => "www-data")
 end
 
 Vagrant.configure("2") do |config|
