@@ -52,6 +52,10 @@
       npm: name=grunt global=yes
     - name: run apache2
       service: name=apache2 state=started enabled=yes
+    - name: install redis 
+      action: apt name={{item}} state=installed
+      with_items:
+        - redis-server
    #IF You're expecting to server stuff from index.html please comment this out.    
     - name: Remove index.html from the web folder
       file: path=/var/www/index.html state=absent
